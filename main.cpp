@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 
     if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
 
+
     int mode = 0;
 
     while(true){
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
         if(iSliderValue1 < 3){
             if(mode == 0){
                 srand(time(NULL));
-                mode = rand()%3 + 1; // 1 = eyebrow, 2 = nose, 3 = scream face
+                mode = rand()%3 + 1; // 1 = eyebrow, 2 = scream face, 3 = nose
             }
             detectAndDisplay( frame , screen, mode);
         } else {
@@ -106,6 +107,13 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
             }
             break;
         case 3:{
+				Point noseP((faces[i].width / 3), (faces[i].height *0.4));
+				Mat rednose = imread("rednose.png", IMREAD_UNCHANGED);
+				Mat rednose_resized, rednose_mask_resized;
+				resize(rednose, rednose_resized, cv::Size(faces[i].width *0.36 , faces[i].width *0.36));
+				//imshow("re_eyebrow", rednose_resized);
+				Mat imgROI = screen(faces[i]);
+				overlayImage(imgROI, rednose_resized, imgROI, noseP);
             }
             break;
         default:
