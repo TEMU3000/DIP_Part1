@@ -39,7 +39,6 @@
 			<Add directory="C:/Users/Y.C.Lai/opencvdll/lib" />
 			<Add directory="C:/Users/Y.C.Lai/opencvdll/bin" />
 		</Linker>
-		<Unit filename="lena.jpg" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
