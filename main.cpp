@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
         if(iSliderValue1 < 3){
             if(mode == 0){
-                mode = rand()%3 + 1; // 1 = eyebrow, 2 = scream face, 3 = nose
+                mode = rand()%4 + 1; // 1 = eyebrow, 2 = scream face, 3 = nose
             }
             detectAndDisplay( frame , screen, mode);
         } else {
@@ -100,9 +100,8 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
                 Mat scream = imread("ScreamFace.png", IMREAD_UNCHANGED);
                 Mat re_scream;
                 resize( scream, re_scream, Size(faces[i].width, faces[i].height*1.35) );
-                Mat imgROI = screen(Rect(faces[i].x, (faces[i].y - faces[i].height*0.18) > 0 ? (faces[i].y - faces[i].height*0.18) : 0, faces[i].width,
-                            (faces[i].y+faces[i].height*1.17) < screen.rows ? faces[i].height*1.35 : screen.rows - (faces[i].y - faces[i].height*0.18)));
-                overlayImage(imgROI, re_scream, imgROI, Point(0,0));
+
+                overlayImage(screen, re_scream, screen, Point(faces[i].x, faces[i].y - faces[i].height*0.18));
             }
             break;
         case 3:{
@@ -115,11 +114,21 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
 				overlayImage(imgROI, rednose_resized, imgROI, noseP);
             }
             break;
+        case 4:{
+                Mat wig = imread("wig.png", IMREAD_UNCHANGED);
+                Mat re_wig;
+                resize( wig, re_wig, Size(faces[i].width*2, faces[i].height*2) );
+
+                overlayImage(screen, re_wig, screen, Point(faces[i].x + faces[i].width/2 - re_wig.cols/2,
+                                                           faces[i].y - re_wig.rows * 0.45));
+            }
+            break;
         default:
             break;
         }
     }
 
+    putText(screen, "Smile more!", Point(10,30), FONT_HERSHEY_SIMPLEX , 1, Scalar(0,0,0));
     //-- Show what you got
     imshow( "screen", screen );
 }
