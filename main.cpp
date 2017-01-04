@@ -81,7 +81,7 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
 
     for ( size_t i = 0; i < faces.size(); i++ ) {
         Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
-        ellipse( screen, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 0 ), 4, 8, 0 );
+        //ellipse( screen, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 0 ), 4, 8, 0 );
 
         Mat faceROI = frame_gray( faces[i] );
 
