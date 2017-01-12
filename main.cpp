@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
         if(iSliderValue1 < 3){
             if(mode == 0){
-                mode = rand()%4 + 1; // 1 = eyebrow, 2 = scream face, 3 = nose
+                mode = rand()%4 + 1; // 1 = eyebrow, 2 = scream face, 3 = nose, 4 = wig
             }
             detectAndDisplay( frame , screen, mode);
         } else {
@@ -90,7 +90,6 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
                 Mat eyebrow = imread("Eyebrow.png", IMREAD_UNCHANGED);
                 Mat re_eyebrow;
                 resize( eyebrow, re_eyebrow, Size(faces[i].width*0.8, faces[i].width * eyebrow.rows / eyebrow.cols) );
-                //imshow("re_eyebrow",re_eyebrow);
 
                 Mat imgROI = screen(faces[i]);
                 overlayImage(imgROI, re_eyebrow, imgROI, Point(faces[i].width*0.1, faces[i].width * 1/8));
@@ -109,7 +108,6 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
 				Mat rednose = imread("rednose.png", IMREAD_UNCHANGED);
 				Mat rednose_resized, rednose_mask_resized;
 				resize(rednose, rednose_resized, cv::Size(faces[i].width *0.36 , faces[i].width *0.36));
-				//imshow("re_eyebrow", rednose_resized);
 				Mat imgROI = screen(faces[i]);
 				overlayImage(imgROI, rednose_resized, imgROI, noseP);
             }
@@ -129,35 +127,26 @@ void detectAndDisplay( Mat frame , Mat screen, int mode){
     }
 
     putText(screen, "Smile more!", Point(10,30), FONT_HERSHEY_SIMPLEX , 1, Scalar(0,0,0));
-    //-- Show what you got
     imshow( "screen", screen );
 }
 
 void overlayImage(const Mat &background, const Mat &foreground, Mat &output, Point2i location){
     background.copyTo(output);
 
-    // start at the row indicated by location, or at row 0 if location.y is negative.
-    for(int y = std::max(location.y , 0); y < background.rows; ++y) {
-        int fY = y - location.y; // because of the translation
+    for(int y = max(location.y , 0); y < background.rows; ++y) {
+        int fY = y - location.y;
 
-        // we are done of we have processed all rows of the foreground image.
         if(fY >= foreground.rows)
             break;
 
-        // start at the column indicated by location,
-        // or at column 0 if location.x is negative.
-        for(int x = std::max(location.x, 0); x < background.cols; ++x) {
-            int fX = x - location.x; // because of the translation.
+        for(int x = max(location.x, 0); x < background.cols; ++x) {
+            int fX = x - location.x;
 
-            // we are done with this row if the column is outside of the foreground image.
             if(fX >= foreground.cols)
                 break;
 
-            // determine the opacity of the foregrond pixel, using its fourth (alpha) channel.
             double opacity = ((double)foreground.data[fY * foreground.step + fX * foreground.channels() + 3]) / 255.;
 
-            // and now combine the background and foreground pixel, using the opacity,
-            // but only if opacity > 0.
             for(int c = 0; opacity > 0 && c < output.channels(); ++c) {
                 unsigned char foregroundPx = foreground.data[fY * foreground.step + fX * foreground.channels() + c];
                 unsigned char backgroundPx = background.data[y * background.step + x * background.channels() + c];
